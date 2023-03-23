@@ -19,21 +19,22 @@ public class AudioVisuallizer : MonoBehaviour
     public float _volume = 1.0f;
     [Space(15), Range(0.0f, 1.0f)]
     public float Sensitive = 0.0f;
-    [Space(15), Range(0, 100)]
+    [Space(15), Range(0, 1000)]
     public int _intensity = 1;
 
-    public Light spotlight;
-
+    Light spotlight;
+    public Color lightColor;
+    private float light_i;
     AudioSource audioSource;
     Rigidbody cam;
     Transform _cam;
-    public int force;
+    public int force = 120;
 
     private void Awake()
     {
         cam = GetComponent<Rigidbody>();
         _cam = GetComponent<Transform>();
-        //spotlight = GetComponentInChildren<Light>();
+        spotlight = GetComponentInChildren<Light>();
     }
 
     // Start is called before the first frame update
@@ -59,20 +60,28 @@ public class AudioVisuallizer : MonoBehaviour
         for (int i = 0; i < spectrumData.Length; i++)
         {
             //_cam.Translate(Vector3.forward * _intensity * Time.deltaTime);
-            if (spectrumData[i] > 0.2)
-                {
-                cam.AddForce(Vector3.right * spectrumData[i] * force * 2 * Time.deltaTime);
-                //_cam.Translate(Vector3.forward * spectrumData[i] * force * Time.deltaTime);
-                //spotlight.intensity = 1 * _intensity;
+            //if (spectrumData[i] > 0.2)
+            //    {
+            //cam.AddForce(Vector3.right * spectrumData[i] * force * Time.deltaTime);
+            _cam.Translate(Vector3.forward * spectrumData[i] * force * Time.deltaTime);
+            //spotlight.intensity = 1 * _intensity;
+            //}
+            //    else
+            //    {
+            //    cam.AddForce(Vector3.right * spectrumData[i] * force * Time.deltaTime);
+            //    //_cam.Translate(Vector3.forward * spectrumData[i] * Time.deltaTime);
+            //    //spotlight.intensity = 1;
+            //    }
+
+            light_i =  spectrumData[i] * 1000;
+            if (light_i > 1)
+            {
+                spotlight.intensity = light_i;
             }
-                else
-                {
-                cam.AddForce(Vector3.right * spectrumData[i] * force * Time.deltaTime);
-                //_cam.Translate(Vector3.forward * spectrumData[i] * Time.deltaTime);
-                //spotlight.intensity = 1;
-                }
-            spotlight.intensity = spectrumData[i] * _intensity;
-            
+           
+         
+            spotlight.color = lightColor;
+            Debug.Log(light_i);
         }
     }
 }
